@@ -1,0 +1,20 @@
+body{
+  margin: 0px;
+  padding: 0px;
+}
+.container {
+    display: flex;
+}
+
+#controls-div {
+  background-color: #f0f2f0;
+  flex-basis: 40%;
+  padding: 0;
+  width: 1vw;
+}
+
+#map-div {
+  height: 100vh;
+  padding: 0;
+  flex-basis: 60%;
+}
