@@ -4,14 +4,58 @@
     <meta charset="utf-8">
     <title>EleNa</title>
     <link rel="stylesheet" href="css/indexStyle.css">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI=" crossorigin=""/>
-    <!-- Leaflet's JS ALWAYS AFTER Leaflet's CSS. Local JS ALWAYS AFTER Leaflet's JS -->
-    <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js" integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM=" crossorigin=""></script>
+    <link rel="stylesheet" href="https://js.arcgis.com/4.26/esri/themes/light/main.css">
+    <script src="https://js.arcgis.com/4.26/"></script>
     <script src="js/indexScript.js" async></script>
   </head>
   <body>
     <div class = "container">
   		<div id = "controls-div">
+        <div id="logo-div">
+          <img src="img/temporaryLogo.png" alt="EleNa Logo", id="logo">
+        </div>
+        <div id="transport-select-div">
+          <button type="button" id="car-btn"></button>
+          <button type="button" id="walk-btn"></button>
+          <button type="button" id="bike-btn"></button>
+        </div>
+        <div id="address-div">
+          <div id="start-search-div"></div>
+          <div id="stop-search-div"></div>
+        </div>
+        <div id="params-div">
+          <div id="elevation-div">
+            <form class="" action="index.html" method="post">
+              <fieldset>
+                <legend>Elevation Gain</legend>
+                <div>
+                  <input type="radio" id="max-gain" value="maximize" checked>
+                  <label for="maximize">Maximize</label>
+                </div>
+                <div>
+                  <input type="radio" id="min-gain" value="minimize">
+                  <label for="minimize">Minimize</label>
+                </div>
+              </fieldset>
+            </form>
+          </div>
+          <div id= "distance-info-div">
+            <div>
+              <fieldset>
+                <legend>Max Distance (%)</legend>
+                <div id="distance-div">
+                  <input type="number" id="distance-input" min="0" max="100" step="0.5" value="0">
+                </div>
+              </fieldset>
+            </div>
+            <div id="info-button-div">
+              <button type="button" id="info-btn">i</button>
+            </div>
+          </div>
+        </div>
+        <div id="go-button-div">
+          <button type="button" id="go-btn">GO</button>
+        </div>
   		</div>
   		<div id="map-div"></div>
   	</div>
