@@ -33,4 +33,10 @@ function initEsri(){
   });
 }
 
+function swapAddresses(){
+  var tmp = document.getElementById("start-search-input").value;
+  document.getElementById("start-search-input").value = document.getElementById("stop-search-div-input").value;
+  document.getElementById("stop-search-div-input").value = tmp;
+}
+
 document.body.addEventListener("load", initEsri());
