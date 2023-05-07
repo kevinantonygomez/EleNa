@@ -3,8 +3,12 @@ Embeds map on document load
 Must set API Key below
 Get key from: https://developers.arcgis.com/
 */
-function initEsri(){
-  const apiKey = "Your_API_KEY"
+
+var searchWidgetStart;
+var searchWidgetStop;
+
+function initEsri(searchTerm1, searchTerm2){
+  const apiKey = "Your_API_KEY" //Your_API_KEY
   require(["esri/config", "esri/Map", "esri/views/MapView", "esri/widgets/Search"], function(esriConfig, Map, MapView, Search){
 
     esriConfig.apiKey = apiKey; // Set API Key
@@ -20,13 +24,13 @@ function initEsri(){
       container: "map-div" // div id of container
     });
 
-    var searchWidgetStart = new Search({
+    searchWidgetStart = new Search({
       id: "start-search",
       view: view, // zooms in on searched address on map
       container: "start-search-div"
     });
 
-    var searchWidgetStop = new Search({
+    searchWidgetStop = new Search({
       container: "stop-search-div"
     });
 
@@ -35,8 +39,10 @@ function initEsri(){
 
 function swapAddresses(){
   var tmp = document.getElementById("start-search-input").value;
-  document.getElementById("start-search-input").value = document.getElementById("stop-search-div-input").value;
-  document.getElementById("stop-search-div-input").value = tmp;
+  searchWidgetStart.searchTerm = document.getElementById("stop-search-div-input").value;
+  searchWidgetStop.searchTerm = tmp;
+  searchWidgetStart.search();
 }
 
-document.body.addEventListener("load", initEsri());
+document.body.addEventListener("load", initEsri(null, null));
+document.getElementById("swap-btn").addEventListener("click", swapAddresses);
