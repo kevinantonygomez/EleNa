@@ -8,7 +8,7 @@ var searchWidgetStart;
 var searchWidgetStop;
 
 function initEsri(searchTerm1, searchTerm2){
-  const apiKey = "Your_API_KEY" //Your_API_KEY
+  const apiKey = "Your_API_KEY"
   require(["esri/config", "esri/Map", "esri/views/MapView", "esri/widgets/Search"], function(esriConfig, Map, MapView, Search){
 
     esriConfig.apiKey = apiKey; // Set API Key
@@ -44,5 +44,17 @@ function swapAddresses(){
   searchWidgetStart.search();
 }
 
+function showInfoModal(){
+  const modal = document.getElementById('modal');
+  modal.style.display = 'block';
+}
+
+function hideInfoModal(){
+  const modal = document.getElementById('modal');
+  modal.style.display = 'none';
+}
+
 document.body.addEventListener("load", initEsri(null, null));
 document.getElementById("swap-btn").addEventListener("click", swapAddresses);
+document.getElementById("info-btn").addEventListener("click", showInfoModal);
+document.getElementById("close-modal").addEventListener("click", hideInfoModal);

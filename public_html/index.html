@@ -10,14 +10,20 @@
   </head>
   <body>
     <div class = "container">
+      <div id="modal">
+        <div id="modal-content">
+          <span id="close-modal">&times;</span>
+          <p>Used to specify the maximum distance over the shortest possible route that the user is willing to travel. The generated routes are stricly within this threshold.</p>
+        </div>
+      </div>
   		<div id = "controls-div">
         <div id="logo-div">
           <img src="img/temporaryLogo.png" alt="EleNa Logo", id="logo">
         </div>
         <div id="transport-select-div">
-          <button type="button" id="car-btn"></button>
-          <button type="button" id="walk-btn"></button>
-          <button type="button" id="bike-btn"></button>
+          <button type="button" id="car-btn" title="Driving"></button>
+          <button type="button" id="walk-btn" title="Walking"></button>
+          <button type="button" id="bike-btn" title="Cycling"></button>
         </div>
         <div id="address-parent-div">
           <div id="address-div">
@@ -25,7 +31,7 @@
             <div id="stop-search-div"></div>
           </div>
           <div id="address-swap-div">
-            <button type="button" id="swap-btn"> ↑↓</button>
+            <button type="button" id="swap-btn" title="Reverse starting point and destination"> ↑↓</button>
           </div>
         </div>
         <div id="params-div">
