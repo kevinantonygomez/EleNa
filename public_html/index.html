@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="https://js.arcgis.com/4.26/esri/themes/light/main.css">
     <script src="https://js.arcgis.com/4.26/"></script>
     <script src="js/indexScript.js" async></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   </head>
   <body>
     <div class = "container">
@@ -21,9 +22,9 @@
           <img src="img/temporaryLogo.png" alt="EleNa Logo", id="logo">
         </div>
         <div id="transport-select-div">
-          <button type="button" id="car-btn" title="Driving"></button>
-          <button type="button" id="walk-btn" title="Walking"></button>
-          <button type="button" id="bike-btn" title="Cycling"></button>
+          <button type="button" id="car" class = "inactiveRoute" title="Driving"></button>
+          <button type="button" id="walk" class = "inactiveRoute" title="Walking"></button>
+          <button type="button" id="bike" class = "inactiveRoute" title="Cycling"></button>
         </div>
         <div id="address-parent-div">
           <div id="address-div">
@@ -36,19 +37,17 @@
         </div>
         <div id="params-div">
           <div id="elevation-div">
-            <form class="" action="index.html" method="post">
-              <fieldset>
-                <legend>Elevation Gain</legend>
-                <div>
-                  <input type="radio" id="max-gain" name="gain-radio" value="maximize" checked>
-                  <label for="maximize">Maximize</label>
-                </div>
-                <div>
-                  <input type="radio" id="min-gain" name="gain-radio" value="minimize">
-                  <label for="minimize">Minimize</label>
-                </div>
-              </fieldset>
-            </form>
+            <fieldset>
+              <legend>Elevation Gain</legend>
+              <div>
+                <input type="radio" id="max-gain" name="gain-radio" value="maximize" checked>
+                <label for="maximize">Maximize</label>
+              </div>
+              <div>
+                <input type="radio" id="min-gain" name="gain-radio" value="minimize">
+                <label for="minimize">Minimize</label>
+              </div>
+            </fieldset>
           </div>
           <div id= "distance-info-div">
             <div>

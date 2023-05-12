@@ -3,9 +3,11 @@ body{
   padding: 0px;
 }
 
+
 .container {
     display: flex;
 }
+
 
 #controls-div {
   background-color: #f5f5f5;
@@ -19,6 +21,7 @@ body{
   border: 0.3vh solid black;
 }
 
+
 #controls-div> *{
   width: 100%;
   display: flex;
@@ -27,12 +30,14 @@ body{
   height: 20vh;
 }
 
+
 #transport-select-div{
   display: flex;
   align-items:center;
   flex-direction: row;
   height: 15vh;
 }
+
 
 #transport-select-div button{
   min-width: 5vw;
@@ -48,17 +53,21 @@ body{
   background-position: center;
 }
 
-#car-btn{
+
+#car{
   background: url('../img/carSymbol.png');
 }
 
-#walk-btn{
+
+#walk{
   background: url('../img/walkSymbol.png');
 }
 
-#bike-btn{
+
+#bike{
   background: url('../img/bikeSymbol.png');
 }
+
 
 #transport-select-div button:hover{
   transition-duration: 0.4s;
@@ -69,11 +78,20 @@ body{
   background-blend-mode: multiply;
 }
 
-#transport-select-div button:focus{
+
+#transport-select-div .activeRoute:focus{
   background-color: #00ba66;
   box-shadow: 0 4px 6px black;
   transform: translateY(-10px);
 }
+
+
+#transport-select-div .activeRoute{
+  background-color: #00ba66;
+  box-shadow: 0 4px 6px black;
+  transform: translateY(-10px);
+}
+
 
 #address-parent-div{
   min-height: 25vh;
@@ -82,17 +100,19 @@ body{
   justify-content: space-evenly;
 }
 
+
 #address-div{
-  /* min-height: 25vh; */
   flex-direction: column;
   flex-wrap: wrap;
   justify-content: space-evenly;
 }
 
+
 #address-div > *{
   margin: 2%;
   border: 1px solid black;
 }
+
 
 #swap-button{
   border: 1.5px solid #333;
@@ -101,15 +121,18 @@ body{
   font-weight: bold;
 }
 
+
 #swap-button:hover{
   background-color: lightgrey;
 }
+
 
 #params-div{
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: space-evenly;
 }
+
 
 #distance-div{
   min-height: 10%;
@@ -119,23 +142,28 @@ body{
   align-items: center;
 }
 
+
 #distance-info-div{
   display: flex;
   flex-direction: row;
   align-items: center;
 }
 
+
 p, label {
     font: 1rem 'Fira Sans', sans-serif;
 }
+
 
 legend{
   font-weight: bold;
 }
 
+
 input {
     margin: 0.5rem;
 }
+
 
 #go-btn {
   background-color:#00ba66;
@@ -147,6 +175,7 @@ input {
   font-weight: bold;
 }
 
+
 #go-btn:hover {
   background-color:#02e37d;
   color: #fff;
@@ -154,9 +183,11 @@ input {
   transform: scale(1.1);
 }
 
+
 #go-button-div button:active{
   transform: translateY(5%);
 }
+
 
 #info-btn{
   border: 1.5px solid #333;
@@ -164,26 +195,29 @@ input {
   font-weight: bold;
 }
 
+
 #info-btn:hover{
   background-color: lightgrey;
   font: 'Fira Sans', sans-serif;
 }
+
 
 #logo{
   width: 15vw;
   height: auto;
 }
 
+
 #logo-div{
   height: 19.5vh;
 }
+
 
 #map-div {
   height: 100vh;
   padding: 0;
   flex-basis: 70%;
 }
-
 
 
 /* Hide the modal by default */
@@ -199,6 +233,7 @@ input {
   background-color: rgba(0, 0, 0, 0.5);
 }
 
+
 /* Style the modal content */
 #modal-content {
   background-color: white;
@@ -209,6 +244,7 @@ input {
   font: 1rem 'Times', sans-serif;
 }
 
+
 /* Style the close button */
 #close-modal {
   color: #aaa;
@@ -216,6 +252,7 @@ input {
   font-size: 28px;
   font-weight: bold;
 }
+
 
 #close-modal:hover,
 #close-modal:focus {
