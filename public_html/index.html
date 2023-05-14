@@ -36,18 +36,33 @@
           </div>
         </div>
         <div id="params-div">
-          <div id="elevation-div">
-            <fieldset>
-              <legend>Elevation Gain</legend>
-              <div>
-                <input type="radio" id="max-gain" name="gain-radio" value="maximize" checked>
-                <label for="maximize">Maximize</label>
-              </div>
-              <div>
-                <input type="radio" id="min-gain" name="gain-radio" value="minimize">
-                <label for="minimize">Minimize</label>
-              </div>
-            </fieldset>
+          <div id="elevation-algorithm-div">
+            <div id="elevation-div">
+              <fieldset>
+                <legend>Elevation Gain</legend>
+                <div>
+                  <input type="radio" id="max-gain" name="gain-radio" value="maximize" checked>
+                  <label for="maximize">Maximize</label>
+                </div>
+                <div>
+                  <input type="radio" id="min-gain" name="gain-radio" value="minimize">
+                  <label for="minimize">Minimize</label>
+                </div>
+              </fieldset>
+            </div>
+            <div>
+              <fieldset>
+                <legend>Algorithm</legend>
+                <div>
+                  <input type="radio" id="dijkstra" name="alg-radio" value="dijkstra" checked>
+                  <label for="Dijkstra">Dijkstra</label>
+                </div>
+                <div>
+                  <input type="radio" id="a-star" name="alg-radio" value="A*">
+                  <label for="A*">A*</label>
+                </div>
+              </fieldset>
+            </div>
           </div>
           <div id= "distance-info-div">
             <div>

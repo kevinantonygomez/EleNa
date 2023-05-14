@@ -92,9 +92,13 @@ body{
   transform: translateY(-10px);
 }
 
+legend {
+      text-align: center;
+}
+
 
 #address-parent-div{
-  min-height: 25vh;
+  min-height: 20vh;
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: space-evenly;
@@ -131,6 +135,7 @@ body{
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: space-evenly;
+  height: 25vh;
 }
 
 

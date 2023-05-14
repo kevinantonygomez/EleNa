@@ -144,6 +144,25 @@ function setGainType(thisBtn){
 
 
 /*
+Handles selection of algorithm . Sends selected gain type to server.
+*/
+function setAlgorithm(thisBtn){
+  $.ajax({
+    url: '/set/algorithm',
+    method: 'POST',
+    data: {algorithm:thisBtn.value}
+  })
+  .done(function(data, statusText, xhr){
+    if(xhr.status != 200) {
+      if(xhr.responseText == "noBody"){
+        console.log("noBody");
+      }
+    }
+  });
+}
+
+
+/*
 Handles setting of maximum distance value. Sends selected distance to server.
 */
 function setMaxDist(){
@@ -225,6 +244,13 @@ window.addEventListener('DOMContentLoaded', function() {
   gainBtns.forEach(function(thisBtn) {
   thisBtn.addEventListener("change", function() {
     setGainType(thisBtn);
+    });
+  });
+
+  var algBtns = document.getElementsByName("alg-radio");
+  algBtns.forEach(function(thisBtn) {
+  thisBtn.addEventListener("change", function() {
+    setAlgorithm(thisBtn);
     });
   });
 

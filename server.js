@@ -13,7 +13,7 @@ app.use(express.static("public_html"));
 var routeType = null; // store selected route type. null by default
 var elevationGainType = "maximize"; // store selected elevation gain type. maximize by default
 var maxDist = 0; // store max distance %. 0 by default
-
+var algorithm = "dijkstra" // store selected algorithm. dijkstra by default
 
 /*
 Sets route type
@@ -53,6 +53,18 @@ app.post('/set/gain/type', function (req, res) {
 
 
 /*
+Sets algorithm
+*/
+app.post('/set/algorithm', function (req, res) {
+  if (req.body.length == 0){
+    res.status(400).send("noBody");
+  }
+  algorithm = req.body.algorithm;
+  res.status(200).send("success");
+});
+
+
+/*
 Sets max disance %
 */
 app.post('/set/max/distance', function (req, res) {
@@ -78,7 +90,8 @@ app.post('/get/route', function (req, res) {
     stopLocation: req.body.data.stopLocation,
     routeType: routeType,
     elevationGainType: elevationGainType,
-    maxDist: maxDist
+    maxDist: maxDist,
+    algorithm: algorithm
   };
 
   $.ajax({

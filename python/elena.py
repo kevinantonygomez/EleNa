@@ -57,6 +57,7 @@ def handle_request():
     route_type = data["routeType"]
     elevation_gain_type = data["elevationGainType"]
     max_dist = data["maxDist"]
+    algorithm = data["algorithm"]
 
     # Do something with the data
 
