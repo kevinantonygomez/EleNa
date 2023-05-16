@@ -1,49 +1,47 @@
 import osmnx as ox
-from osmnx import distance as oxd
-import matplotlib.pyplot as plt
-import random
-import networkx as nx
-from osmnx import elevation
-from osmnx.distance import shortest_path
-import folium
-import requests
-import json
-from django.http import JsonResponse
 from flask import Flask, request, jsonify
 from flask_cors import CORS
+import dijkstra as dijkstra
+import a_star as a_star
+import json
+
+def check_addresses(start_location:str, stop_location:str):
+    try:
+        start_location_split = start_location.split(",")
+        if len(start_location_split) >= 6: start_location_split.pop(0)
+        start_location = ",".join(start_location_split)
+        start_geocode = ox.geocode(start_location)
+        print("start_location: ", start_geocode)
+    except:
+        print("No geocode for start_location")
+        return "invalid_start"
+    try:
+        stop_location_split = stop_location.split(",")
+        if len(stop_location_split) >= 6: stop_location_split.pop(0)
+        stop_location = ",".join(stop_location_split)
+        stop_geocode = ox.geocode(stop_location)
+        print("stop_location: ", stop_geocode)
+    except:
+        print("No geocode for stop_location")
+        return "invalid_stop"
+    return (start_location, stop_location)
 
 
-def get_geocodes(nodes_list:list, G:nx.classes.multidigraph.MultiDiGraph):
-    geocodes_dict = dict()
-    for node in nodes_list:
-        geocodes_dict[node] = (G.nodes[node]['y'], G.nodes[node]['x'])
-    # [(G.nodes[node]['y'], G.nodes[node]['x']) for node in shortest_path_nodes_ids]
-    return geocodes_dict
 
+def main(start_location:str, stop_location:str, route_type:str, elevation_gain_type:str, max_dist:str, algorithm:str):
+    check_res = check_addresses(start_location, stop_location)
+    if type(check_res) != tuple:
+        return check_res
 
-def get_all_elevations(nodes_list:list, G:nx.classes.multidigraph.MultiDiGraph):
-    elevations_dict = dict()
-    geocodes_dict = get_geocodes(nodes_list, G)
+    start_location = check_res[0]
+    stop_location = check_res[1]
 
-    for key in geocodes_dict.keys():
-        lat = geocodes_dict[key][0]
-        long = geocodes_dict[key][1]
-        url = f"https://api.opentopodata.org/v1/aster30m?locations={lat},{long}"
-        response = requests.request("GET", url)
-        json_response = json.loads(response.text)
-        if json_response['status'] == 'OK' and len(json_response['results']) > 0:
-            elevations_dict[key] = json_response['results'][0]['elevation'] # in meters
-            print(f"Lat:{lat}, Long:{long}, Elevation:{elevations_dict[key]}")
-    return elevations_dict
+    if algorithm == "dijkstra":
+        gen_route = dijkstra.algorithm(start_location, stop_location, route_type, elevation_gain_type, max_dist)
+    elif algorithm == "A*":
+        gen_route = a_star.algorithm(start_location, stop_location, route_type, elevation_gain_type, max_dist)
 
-
-def get_elevation(lat_long:tuple):
-    url = f"https://api.opentopodata.org/v1/aster30m?locations={lat_long[0]},{lat_long[1]}"
-    response = requests.request("GET", url)
-    json_response = json.loads(response.text)
-    if json_response['status'] == 'OK' and len(json_response['results']) > 0:
-        return json_response['results'][0]['elevation'] # in meters
-    return None
+    return gen_route
 
 
 
@@ -59,12 +57,17 @@ def handle_request():
     max_dist = data["maxDist"]
     algorithm = data["algorithm"]
 
-    # Do something with the data
+    res = main(start_location, stop_location, route_type, elevation_gain_type, max_dist, algorithm)
 
     # Return the result to the client
-    result = "result_here"
-    response = jsonify({'result': result})
+    if type(res) == str:
+        response = jsonify({'error': res}), 400
+    elif res == None:
+        response = jsonify({'error': "error"}), 400
+    else:
+        response = json.dumps(res), 200
     return response
 
+
 if __name__ == '__main__':
-    app.run(port = 5000)
+    app.run(port = 2000)

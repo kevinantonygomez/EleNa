@@ -93,15 +93,14 @@ app.post('/get/route', function (req, res) {
     maxDist: maxDist,
     algorithm: algorithm
   };
-
   $.ajax({
     type: "POST",
-    url: "http://localhost:5000/get_route",
+    url: "http://127.0.0.1:2000/get_route",
     data: JSON.stringify(data),
     contentType: "application/json",
     success: function(response) {
       console.log(response);
-      res.status(200).send("success");
+      res.status(200).send(response);
     },
     error: function(xhr, status, error) {
       console.error('Error:', error);

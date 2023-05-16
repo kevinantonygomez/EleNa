@@ -1,6 +1,6 @@
 var searchWidgetStart; // store current start location
 var searchWidgetStop; // store current stop location
-
+var map;
 
 /*
 Embeds map on document load
@@ -13,7 +13,7 @@ function initEsri(searchTerm1, searchTerm2){
 
     esriConfig.apiKey = apiKey;
 
-    const map = new Map({
+     map = new Map({
       basemap: "arcgis-navigation"
     });
 
@@ -38,6 +38,35 @@ function initEsri(searchTerm1, searchTerm2){
 }
 
 
+function showRoute(data){
+  data = JSON.parse(data);
+
+  require(["esri/Map", "esri/views/MapView", "esri/widgets/Search", "esri/layers/GraphicsLayer", "esri/geometry/Polyline",
+  "esri/symbols/SimpleLineSymbol", "esri/Graphic"],
+  function(Map, MapView, Search, GraphicsLayer, Polyline, SimpleLineSymbol, Graphic){
+
+    const routeLayer = new GraphicsLayer();
+    map.add(routeLayer);
+
+    const polylineJson = {
+      "paths": data,
+      "spatialReference": {"wkid": 4326}
+    };
+    const polyline = new Polyline(polylineJson);
+
+    const symbol = new SimpleLineSymbol({
+      color: [0, 0, 255],
+      width: 5,
+      style: "solid"
+    });
+
+    const graphic = new Graphic({
+      geometry: polyline,
+      symbol: symbol
+    });
+    routeLayer.add(graphic);
+  });
+}
 
 /*
 Swaps start and stop addresses when swap button is clicked. Automatically updates maps
@@ -213,11 +242,14 @@ function getRoute(){
     $.ajax({
       url: '/get/route',
       method: 'POST',
-      data: {data:data}
-    })
-    .done(function(data, statusText, xhr){
-      if(xhr.status != 200) {
-        console.log(xhr.responseText);
+      data: {data:data},
+      success: function(response) {
+        console.log(response);
+        showRoute(response);
+      },
+      error: function(xhr, status, error) {
+        console.error('Error:', error);
+        alert("No route could be generated for these constraints")
       }
     });
   });
