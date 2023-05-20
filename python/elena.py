@@ -5,6 +5,8 @@ import dijkstra as dijkstra
 import a_star as a_star
 import json
 
+KEY = None
+
 def check_addresses(start_location:str, stop_location:str):
     try:
         start_location_split = start_location.split(",")
@@ -37,9 +39,9 @@ def main(start_location:str, stop_location:str, route_type:str, elevation_gain_t
     stop_location = check_res[1]
 
     if algorithm == "dijkstra":
-        gen_route = dijkstra.algorithm(start_location, stop_location, route_type, elevation_gain_type, max_dist)
+        gen_route = dijkstra.algorithm(start_location, stop_location, route_type, elevation_gain_type, max_dist, KEY)
     elif algorithm == "A*":
-        gen_route = a_star.algorithm(start_location, stop_location, route_type, elevation_gain_type, max_dist)
+        gen_route = a_star.algorithm(start_location, stop_location, route_type, elevation_gain_type, max_dist, KEY)
 
     return gen_route
 
@@ -70,4 +72,6 @@ def handle_request():
 
 
 if __name__ == '__main__':
+    f = open("./key.txt")
+    KEY = f.read()
     app.run(port = 2000)
