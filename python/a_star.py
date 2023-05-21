@@ -12,6 +12,14 @@ LENGTH_ATTR = "length"
 # Elevation attribute name for elevation of nodes in graph
 ELEVATION_ATTR = "elevation"
 
+def geo_code(graph, nodes:list):
+    geo_coded_nodes = list()
+
+    for node in nodes:
+        geo_coded_nodes.append([graph.nodes[node]['x'], graph.nodes[node]['y']])
+
+    return geo_coded_nodes
+
 
 def algorithm(start_location:str, stop_location:str, route_type:str, elevation_gain_type:str, max_dist:str, API_KEY:str):
     # call required methods here.
@@ -91,4 +99,4 @@ def algorithm(start_location:str, stop_location:str, route_type:str, elevation_g
         current = came_from[current]
     my_path.reverse()
 
-    return my_path
+    return geo_code(graph, my_path)
