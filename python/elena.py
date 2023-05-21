@@ -76,4 +76,3 @@ if __name__ == '__main__':
     f = open("./key.txt")
     KEY = f.read()
     app.run(port = 2000, debug=True)
-    # main("21 Hallock St, Amherst, MA 01002", "140 Governors Dr, Amherst, MA 01002", "drive", "max", "20", "A*")
