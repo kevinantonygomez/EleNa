@@ -13,7 +13,7 @@ app.use(express.static("public_html"));
 var routeType = null; // store selected route type. null by default
 var elevationGainType = "maximize"; // store selected elevation gain type. maximize by default
 var maxDist = 0; // store max distance %. 0 by default
-var algorithm = "dijkstra" // store selected algorithm. dijkstra by default
+var algorithm = "A*" // store selected algorithm. dijkstra by default
 
 /*
 Sets route type

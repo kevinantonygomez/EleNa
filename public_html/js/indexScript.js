@@ -9,7 +9,7 @@ Must set API Key below
 Get key from: https://developers.arcgis.com/
 */
 function initEsri(searchTerm1, searchTerm2){
-  const apiKey = YOUR_API_KEY" // Set API Key YOUR_API_KEY
+  const apiKey = "YOUR_API_KEY" // Set API Key YOUR_API_KEY
   require(["esri/config", "esri/Map", "esri/views/MapView", "esri/widgets/Search"], function(esriConfig, Map, MapView, Search){
 
     esriConfig.apiKey = apiKey;
@@ -225,6 +225,27 @@ function setMaxDist(){
   });
 }
 
+function checkAddress(startLocation, stopLocation){
+  if ((startLocation.length == 0)||(stopLocation.length == 0)){
+    alert("Please enter a start and stop location");
+    return false;
+  }
+  if (startLocation == stopLocation){
+    alert("Start and stop locations cannot be the same");
+    return false;
+  }
+
+  startLocationArr = startLocation.split(", ");
+  stopLocationArr = stopLocation.split(", ");
+
+  if ((startLocationArr.includes("Amherst"))&&(stopLocationArr.includes("Amherst"))) {
+    return;
+  }
+
+  alert("Please set addresses within Amherst");
+  return false;
+
+}
 
 /*
 Sends required info to python back end to generate a route. Sends start/stop
@@ -235,8 +256,7 @@ function getRoute(){
   startLocation = searchWidgetStart.searchTerm
   stopLocation = searchWidgetStop.searchTerm
 
-  if ((startLocation.length == 0)||(stopLocation.length == 0)){
-    alert("Please enter a start and stop location");
+  if (checkAddress(startLocation, stopLocation) == false){
     return;
   }
 
