@@ -2,11 +2,12 @@
 import osmnx as ox
 import networkx as nx
 from queue import PriorityQueue
+import math
 
 # Default region(only consider routes in this region/place)
 DEFAULT_REGION = "Amherst, MA"
 # The network type. We don't want bounding box we want network type distance between nodes, not absolute euclidian distance.
-DIST_TYPE = "network"
+DIST_TYPE = "bbox"
 # Length attribute name for length of edges in graph
 LENGTH_ATTR = "length"
 # Elevation attribute name for elevation of nodes in graph
@@ -63,32 +64,46 @@ def algorithm(start_location:str, stop_location:str, route_type:str, elevation_g
 
 
     # A star algorithm, maintaining priority queue for cost to nodes
-    pq = PriorityQueue()
-    pq.put(start_node, 0)
+    # pq = PriorityQueue()
+    # pq.put(start_node, 0)
+    sorted_list = []
+    sorted_list.append((start_node, 0))
     came_from = {}
     cost_so_far = {}
     came_from[start_node] = None
     cost_so_far[start_node] = 0
 
-    while not pq.empty():
-        current = pq.get()
+    stop_lat = graph.nodes[stop_node]['y']
+    stop_long = graph.nodes[stop_node]['x']
+
+    while len(sorted_list) > 0:
+        # current = pq.get()
+        current = sorted_list.pop()[0]
 
         if current == stop_node:
             break
-
+     
         # For all the edges of the current node
         for edge in graph.edges(current):
             from_node = edge[0]
             to_node = edge[1]
+            
+            # current_lat = graph.nodes[current]['y']
+            # current_long = graph.nodes[current]['x']
             # For all variations of that edge since it is a multigraph
             for edge_sub in graph[from_node][to_node].values():                   
                 new_cost = cost_so_far[current] + edge_sub.get(LENGTH_ATTR, None)
                 if to_node not in cost_so_far or new_cost < cost_so_far[to_node]:
                     cost_so_far[to_node] = new_cost
                     # Cost with heuristic here as priority
-                    priority = new_cost + (multiplier * (abs(graph.nodes[current][ELEVATION_ATTR] - graph.nodes[to_node][ELEVATION_ATTR])))
-                    pq.put(to_node, priority)
+                    priority = (multiplier * (abs(graph.nodes[current][ELEVATION_ATTR] - graph.nodes[stop_node][ELEVATION_ATTR])))
+                    if new_cost > shortest_distance_with_percentage_max_dist:
+                        priority = math.inf
+                    sorted_list.append((to_node, priority))
+                    # pq.put(to_node, priority)
                     came_from[to_node] = current
+
+        sorted_list.sort(key=lambda x: x[1])
 
         
     # Getting the path back
@@ -99,4 +114,14 @@ def algorithm(start_location:str, stop_location:str, route_type:str, elevation_g
         current = came_from[current]
     my_path.reverse()
 
+    cost  = nx.classes.function.path_weight(graph, my_path, "length")
+    print(my_path)
+    print(cost)
+
+    a_path = nx.astar_path(graph, start_node, stop_node, lambda current, to_node: (multiplier * (abs(graph.nodes[current][ELEVATION_ATTR] - graph.nodes[to_node][ELEVATION_ATTR]))), weight="length")
+    a_cost = nx.classes.function.path_weight(graph, a_path, "length")
+    print(a_path)
+    print(a_cost)
+
     return geo_code(graph, my_path)
+
