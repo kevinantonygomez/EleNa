@@ -1,6 +1,7 @@
 var searchWidgetStart; // store current start location
 var searchWidgetStop; // store current stop location
 var map;
+var routeLayer;
 
 /*
 Embeds map on document load
@@ -8,7 +9,7 @@ Must set API Key below
 Get key from: https://developers.arcgis.com/
 */
 function initEsri(searchTerm1, searchTerm2){
-  const apiKey = "YOUR_API_KEY" // Set API Key
+  const apiKey = YOUR_API_KEY" // Set API Key YOUR_API_KEY
   require(["esri/config", "esri/Map", "esri/views/MapView", "esri/widgets/Search"], function(esriConfig, Map, MapView, Search){
 
     esriConfig.apiKey = apiKey;
@@ -37,15 +38,25 @@ function initEsri(searchTerm1, searchTerm2){
   });
 }
 
+// Remove previously rendered graphics layer from the map
+function removeGraphicsLayer() {
+  if (routeLayer) { // Check if the graphics layer exists
+    map.remove(routeLayer);
+  }
+}
 
+
+/*
+Renders route onto map
+*/
 function showRoute(data){
   data = JSON.parse(data);
-
+  removeGraphicsLayer(); // delete any previously rendered maps
   require(["esri/Map", "esri/views/MapView", "esri/widgets/Search", "esri/layers/GraphicsLayer", "esri/geometry/Polyline",
   "esri/symbols/SimpleLineSymbol", "esri/Graphic"],
   function(Map, MapView, Search, GraphicsLayer, Polyline, SimpleLineSymbol, Graphic){
 
-    const routeLayer = new GraphicsLayer();
+    routeLayer = new GraphicsLayer();
     map.add(routeLayer);
 
     const polylineJson = {
