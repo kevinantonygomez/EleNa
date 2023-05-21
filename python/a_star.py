@@ -51,7 +51,7 @@ def algorithm(start_location:str, stop_location:str, route_type:str, elevation_g
     # Generating the shortest path, calculating its distance and then adding on the user's settings
     shortest_path = ox.shortest_path(default_region_graph, start_node, stop_node, weight=LENGTH_ATTR, cpus=None)
     shortest_distance = nx.classes.function.path_weight(default_region_graph, shortest_path, weight=LENGTH_ATTR)
-    shortest_distance_with_percentage_max_dist = shortest_distance * (1 + (int(max_dist)/100))
+    shortest_distance_with_percentage_max_dist = shortest_distance * (1 + (float(max_dist)/100))
 
     # Generating the final graph, adding elevations via gmaps.
     graph = ox.graph.graph_from_address(address=start_location, dist=shortest_distance_with_percentage_max_dist, network_type=route_type, dist_type=DIST_TYPE)

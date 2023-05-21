@@ -22,7 +22,7 @@
           <img src="img/temporaryLogo.png" alt="EleNa Logo", id="logo">
         </div>
         <div id="transport-select-div">
-          <button type="button" id="car" class = "inactiveRoute" title="Driving"></button>
+          <button type="button" id="drive" class = "inactiveRoute" title="Driving"></button>
           <button type="button" id="walk" class = "inactiveRoute" title="Walking"></button>
           <button type="button" id="bike" class = "inactiveRoute" title="Cycling"></button>
         </div>
@@ -54,12 +54,12 @@
               <fieldset>
                 <legend>Algorithm</legend>
                 <div>
-                  <input type="radio" id="dijkstra" name="alg-radio" value="dijkstra" checked>
-                  <label for="Dijkstra">Dijkstra</label>
+                  <input type="radio" id="a-star" name="alg-radio" value="A*" checked>
+                  <label for="A*">A*</label>
                 </div>
                 <div>
-                  <input type="radio" id="a-star" name="alg-radio" value="A*">
-                  <label for="A*">A*</label>
+                  <input type="radio" id="dijkstra" name="alg-radio" value="dijkstra">
+                  <label for="Dijkstra">Dijkstra</label>
                 </div>
               </fieldset>
             </div>
@@ -74,7 +74,7 @@
               </fieldset>
             </div>
             <div id="info-button-div">
-              <button type="button" id="info-btn">i</button>
+              <button type="button" id="info-btn" title="info">i</button>
             </div>
           </div>
         </div>
