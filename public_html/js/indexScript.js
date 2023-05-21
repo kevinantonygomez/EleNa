@@ -9,7 +9,7 @@ Must set API Key below
 Get key from: https://developers.arcgis.com/
 */
 function initEsri(searchTerm1, searchTerm2){
-  const apiKey = YOUR_API_KEY" // Set API Key YOUR_API_KEY
+  const apiKey = "AAPK9f950f0170fc442e8c5f5352c7c94199PgJiIB0I7HuEvUv6-LB7pNVzxGjeBmG4zwPcLDj5-ZQSaKv8cbpDhi5P37dHogmT" // Set API Key
   require(["esri/config", "esri/Map", "esri/views/MapView", "esri/widgets/Search"], function(esriConfig, Map, MapView, Search){
 
     esriConfig.apiKey = apiKey;
