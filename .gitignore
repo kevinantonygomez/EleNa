@@ -2,6 +2,9 @@ node_modules/
 package.json
 package-lock.json
 opentopodata/
-key.txt
+python/key.txt
+esri_key.txt
 cache/
 python/__pycache__
+__pycache__
+.pytest_cache
