@@ -73,6 +73,6 @@ def handle_request():
 
 
 if __name__ == '__main__':
-    f = open("./key.txt")
+    f = open("python/key.txt")
     KEY = f.read()
     app.run(port = 2000, debug=True)

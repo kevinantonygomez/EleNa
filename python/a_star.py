@@ -11,8 +11,18 @@ DIST_TYPE = "network"
 LENGTH_ATTR = "length"
 # Elevation attribute name for elevation of nodes in graph
 ELEVATION_ATTR = "elevation"
+# Term to find in both stop and start locations. If input does not include these, return error.
+SEARCH_TERM = "amherst"
 
-def geo_code(graph, nodes:list):
+def calculate_elevation_gain(graph, nodes:list) -> int:
+    ind = 0
+    gain = 0
+    while ind < len(nodes) - 2:
+        gain += abs(graph.nodes[nodes[ind]][ELEVATION_ATTR] - graph.nodes[nodes[ind+1]][ELEVATION_ATTR])
+        ind += 1
+    return gain
+
+def geo_code(graph, nodes:list) -> list:
     geo_coded_nodes = list()
 
     for node in nodes:
@@ -21,12 +31,19 @@ def geo_code(graph, nodes:list):
     return geo_coded_nodes
 
 
-def algorithm(start_location:str, stop_location:str, route_type:str, elevation_gain_type:str, max_dist:str, API_KEY:str):
+def algorithm(start_location:str, stop_location:str, route_type:str, elevation_gain_type:str, max_dist:str, API_KEY:str) -> list:
     # call required methods here.
 
     # A star always looks for lowest cost. If it is a min elevation gain, then each elevation added to length is costly and therefore remains positive.
     # If it is max elevation gain, for the heuristic we subtract it so that the higher elevations become lower cost so A star will look for it.
     multiplier = 1 if elevation_gain_type == "min" else -1
+
+    if "amherst" not in start_location.lower():
+        return []
+
+    if "amherst" not in stop_location.lower():
+        return []
+
 
 
     # Geocoding the start and stop locations to get their latitude and longitudes.
@@ -64,39 +81,53 @@ def algorithm(start_location:str, stop_location:str, route_type:str, elevation_g
 
     # A star algorithm, maintaining priority queue for cost to nodes
     pq = PriorityQueue()
-    pq.put(start_node, 0)
+    pq.put((0, start_node))
     came_from = {}
     cost_so_far = {}
     came_from[start_node] = None
     cost_so_far[start_node] = 0
 
+    path_found = False
+
+
     while not pq.empty():
         current = pq.get()
 
-        if current == stop_node:
-            break
+        current = current[1]
 
+        if current == stop_node:
+            path_found = True
+            break
         # For all the edges of the current node
         for edge in graph.edges(current):
             from_node = edge[0]
             to_node = edge[1]
             # For all variations of that edge since it is a multigraph
-            for edge_sub in graph[from_node][to_node].values():                   
-                new_cost = cost_so_far[current] + edge_sub.get(LENGTH_ATTR, None)
+            for edge_sub in graph[from_node][to_node].values():
+                edge_weight = edge_sub.get(LENGTH_ATTR, None)
+                new_cost = cost_so_far[current] + edge_weight
                 if to_node not in cost_so_far or new_cost < cost_so_far[to_node]:
                     cost_so_far[to_node] = new_cost
-                    # Cost with heuristic here as priority
+                    # Cost with heuristic here as priority, and elevation difference as heuristic.
                     priority = new_cost + (multiplier * (abs(graph.nodes[current][ELEVATION_ATTR] - graph.nodes[to_node][ELEVATION_ATTR])))
-                    pq.put(to_node, priority)
-                    came_from[to_node] = current
+                    pq.put((priority, to_node))
+                    came_from[to_node] = (current, edge_weight)
 
-        
-    # Getting the path back
+    # Getting the path back and checking weight
     my_path = []
     current = stop_node
+    weight = 0
     while current != None:
         my_path.append(current)
-        current = came_from[current]
+        if came_from[current] is not None:
+            prev, length = came_from[current]
+            weight += length
+            current = prev
+        else:
+            current = came_from[current]
+
     my_path.reverse()
 
+    if not path_found or weight > shortest_distance_with_percentage_max_dist:
+        return []
     return geo_code(graph, my_path)
