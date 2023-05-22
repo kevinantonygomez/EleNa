@@ -27,8 +27,8 @@ DRIVE_ROUTE_TYPE = "drive"
 WALK_ROUTE_TYPE = "walk"
 BIKE_ROUTE_TYPE = "bike"
 MAX_DIST_DEFAULT = "15"
-MIN_ELEVATION_GAIN = "min"
-MAX_ELEVATION_GAIN = "max"
+MIN_ELEVATION_GAIN = "minimize"
+MAX_ELEVATION_GAIN = "maximize"
 
 
 class TryTesting(TestCase):

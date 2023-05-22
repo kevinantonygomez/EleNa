@@ -17,7 +17,7 @@ SEARCH_TERM = "amherst"
 # All possible route types for the application
 POSSIBLE_ROUTE_TYPES = ["drive", "walk", "bike"]
 # All possibl elevation gain types
-POSSIBLE_ELEVATION_GAIN_TYPES = ["min", "max"]
+POSSIBLE_ELEVATION_GAIN_TYPES = ["minimize", "maximize"]
 
 def calculate_elevation_gain(graph:nx.MultiDiGraph, nodes:list) -> int:
     ind = 0
@@ -45,11 +45,11 @@ def get_heuristic(elevation_gain_type:str, graph:nx.MultiDiGraph, attr:str) -> C
 
 
 
-def algorithm(start_location:str, stop_location:str, route_type:str, elevation_gain_type:str, max_dist:str, API_KEY:str, to_geocode:bool) -> list:
+def algorithm(start_location:str, stop_location:str, route_type:str, elevation_gain_type:str, max_dist:int, API_KEY:str, to_geocode:bool) -> list:
     # Input checks
     vars = [start_location, stop_location, route_type, elevation_gain_type, max_dist, API_KEY]
     for var in vars:
-        if var is None or type(var) != str:
+        if var is None or (type(var) != str and type(var) != int):
             return None
 
     if type(to_geocode) != bool:
