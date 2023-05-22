@@ -6,6 +6,7 @@ import networkx as nx
 
 # global API Key
 API_KEY = None
+KEY_LOCATION = "python/key.txt"
 
 # Address constants
 CICS_BUILDING_ADDRESS = "140 Governors Dr, Amherst, MA 01002"
@@ -35,7 +36,7 @@ class TryTesting(TestCase):
     @pytest.fixture(autouse=True)
     def run_around_tests(arg):
         # Run before each test
-        f = open("python/key.txt")
+        f = open(KEY_LOCATION)
         global API_KEY
         API_KEY = f.read()
 

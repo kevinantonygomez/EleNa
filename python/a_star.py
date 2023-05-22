@@ -14,6 +14,10 @@ LENGTH_ATTR = "length"
 ELEVATION_ATTR = "elevation"
 # Term to find in both stop and start locations. If input does not include these, return error.
 SEARCH_TERM = "amherst"
+# All possible route types for the application
+POSSIBLE_ROUTE_TYPES = ["drive", "walk", "bike"]
+# All possibl elevation gain types
+POSSIBLE_ELEVATION_GAIN_TYPES = ["min", "max"]
 
 def calculate_elevation_gain(graph:nx.MultiDiGraph, nodes:list) -> int:
     ind = 0
@@ -48,6 +52,17 @@ def algorithm(start_location:str, stop_location:str, route_type:str, elevation_g
         if var is None or type(var) != str:
             return None
 
+    if type(to_geocode) != bool:
+        return None
+    
+    if route_type.lower() not in POSSIBLE_ROUTE_TYPES:
+        return None
+    
+    if elevation_gain_type.lower() not in POSSIBLE_ELEVATION_GAIN_TYPES:
+        return None
+
+    if float(max_dist) < 0 or float(max_dist) > 100:
+        return None
 
 
     if "amherst" not in start_location.lower():
