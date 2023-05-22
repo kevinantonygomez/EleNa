@@ -1,4 +1,6 @@
 from unittest import TestCase
+import sys
+sys.path.append('../../python')
 import a_star
 import pytest
 import osmnx as ox
@@ -6,7 +8,7 @@ import networkx as nx
 
 # global API Key
 API_KEY = None
-KEY_LOCATION = "python/key.txt"
+KEY_LOCATION = "../../python/key.txt"
 
 # Address constants
 CICS_BUILDING_ADDRESS = "140 Governors Dr, Amherst, MA 01002"
@@ -66,7 +68,7 @@ class TryTesting(TestCase):
         elevation_gain_type = MAX_ELEVATION_GAIN
         max_dist = MAX_DIST_DEFAULT
 
-        
+
         default_region_graph = ox.graph_from_place(query=DEFAULT_REGION, network_type=route_type)
         default_region_graph = ox.elevation.add_node_elevations_google(G=default_region_graph, api_key=API_KEY)
 
@@ -74,7 +76,7 @@ class TryTesting(TestCase):
         our_astar_path_cost = nx.classes.function.path_weight(G=default_region_graph, path=our_astar_path, weight=a_star.LENGTH_ATTR)
         our_astar_path_gain = a_star.calculate_elevation_gain(graph=default_region_graph, nodes=our_astar_path)
 
-        
+
         heuristic = a_star.get_heuristic(elevation_gain_type=elevation_gain_type, graph=default_region_graph, attr=a_star.ELEVATION_ATTR)
         networkx_astar_path = nx.astar_path(G=default_region_graph, source=CICS_DRIVE_NODE_ID, target=DICKINSON_HALL_DRIVE_NODE_ID, heuristic=heuristic, weight=a_star.LENGTH_ATTR)
         networkx_astar_path_cost = nx.classes.function.path_weight(G=default_region_graph, path=networkx_astar_path, weight=a_star.LENGTH_ATTR)
@@ -82,7 +84,7 @@ class TryTesting(TestCase):
 
         assert len(our_astar_path) != 0, "With two valid addresses, the output should be a non empty path."
 
-        assert our_astar_path[0] == networkx_astar_path[0] == CICS_DRIVE_NODE_ID, "The start node is not the right one" 
+        assert our_astar_path[0] == networkx_astar_path[0] == CICS_DRIVE_NODE_ID, "The start node is not the right one"
         assert our_astar_path[-1] == networkx_astar_path[-1] == DICKINSON_HALL_DRIVE_NODE_ID, "The stop node is not the right one"
 
         assert our_astar_path_cost <= networkx_astar_path_cost, "The cost of the path should be less than or equal to the default one."
@@ -102,7 +104,7 @@ class TryTesting(TestCase):
         our_astar_path_cost = nx.classes.function.path_weight(G=default_region_graph, path=our_astar_path, weight=a_star.LENGTH_ATTR)
         our_astar_path_gain = a_star.calculate_elevation_gain(graph=default_region_graph, nodes=our_astar_path)
 
-        
+
         heuristic = a_star.get_heuristic(elevation_gain_type=elevation_gain_type, graph=default_region_graph, attr=a_star.ELEVATION_ATTR)
         networkx_astar_path = nx.astar_path(G=default_region_graph, source=CICS_WALK_NODE_ID, target=DICKINSON_HALL_WALK_NODE_ID, heuristic=heuristic, weight=a_star.LENGTH_ATTR)
         networkx_astar_path_cost = nx.classes.function.path_weight(G=default_region_graph, path=networkx_astar_path, weight=a_star.LENGTH_ATTR)
@@ -110,7 +112,7 @@ class TryTesting(TestCase):
 
         assert len(our_astar_path) != 0, "With two valid addresses, the output should be a non empty path."
 
-        assert our_astar_path[0] == networkx_astar_path[0] == CICS_WALK_NODE_ID, "The start node is not the right one" 
+        assert our_astar_path[0] == networkx_astar_path[0] == CICS_WALK_NODE_ID, "The start node is not the right one"
         assert our_astar_path[-1] == networkx_astar_path[-1] == DICKINSON_HALL_WALK_NODE_ID, "The stop node is not the right one"
 
         assert our_astar_path_cost <= networkx_astar_path_cost, "The cost of the path should be less than or equal to the default one."
@@ -130,7 +132,7 @@ class TryTesting(TestCase):
         our_astar_path_cost = nx.classes.function.path_weight(G=default_region_graph, path=our_astar_path, weight=a_star.LENGTH_ATTR)
         our_astar_path_gain = a_star.calculate_elevation_gain(graph=default_region_graph, nodes=our_astar_path)
 
-        
+
         heuristic = a_star.get_heuristic(elevation_gain_type=elevation_gain_type, graph=default_region_graph, attr=a_star.ELEVATION_ATTR)
         networkx_astar_path = nx.astar_path(G=default_region_graph, source=CICS_BIKE_NODE_ID, target=DICKINSON_HALL_BIKE_NODE_ID, heuristic=heuristic, weight=a_star.LENGTH_ATTR)
         networkx_astar_path_cost = nx.classes.function.path_weight(G=default_region_graph, path=networkx_astar_path, weight=a_star.LENGTH_ATTR)
@@ -138,7 +140,7 @@ class TryTesting(TestCase):
 
         assert len(our_astar_path) != 0, "With two valid addresses, the output should be a non empty path."
 
-        assert our_astar_path[0] == networkx_astar_path[0] == CICS_BIKE_NODE_ID, "The start node is not the right one" 
+        assert our_astar_path[0] == networkx_astar_path[0] == CICS_BIKE_NODE_ID, "The start node is not the right one"
         assert our_astar_path[-1] == networkx_astar_path[-1] == DICKINSON_HALL_BIKE_NODE_ID, "The stop node is not the right one"
 
         assert our_astar_path_cost <= networkx_astar_path_cost, "The cost of the path should be less than or equal to the default one."

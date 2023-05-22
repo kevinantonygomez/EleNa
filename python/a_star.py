@@ -1,4 +1,3 @@
-
 import osmnx as ox
 import networkx as nx
 from queue import PriorityQueue
@@ -54,10 +53,10 @@ def algorithm(start_location:str, stop_location:str, route_type:str, elevation_g
 
     if type(to_geocode) != bool:
         return None
-    
+
     if route_type.lower() not in POSSIBLE_ROUTE_TYPES:
         return None
-    
+
     if elevation_gain_type.lower() not in POSSIBLE_ELEVATION_GAIN_TYPES:
         return None
 
@@ -162,7 +161,7 @@ def algorithm(start_location:str, stop_location:str, route_type:str, elevation_g
     # If we did not find a path or if the path we found is too large, we return empty list
     if not path_found or weight > shortest_distance_with_percentage_max_dist:
         return []
-    
+
     if to_geocode:
         return geo_code(graph=graph, nodes=astar_path)
     else:
