@@ -41,7 +41,7 @@ def main(start_location:str, stop_location:str, route_type:str, elevation_gain_t
     if algorithm == "dijkstra":
         gen_route = dijkstra.algorithm(start_location, stop_location, route_type, elevation_gain_type, max_dist, KEY)
     elif algorithm == "A*":
-        gen_route = a_star.algorithm(start_location, stop_location, route_type, elevation_gain_type, max_dist, KEY)
+        gen_route = a_star.algorithm(start_location=start_location, stop_location=stop_location, route_type=route_type, elevation_gain_type=elevation_gain_type, max_dist=max_dist, API_KEY=KEY, to_geocode=True)
 
     return gen_route
 
@@ -63,10 +63,10 @@ def handle_request():
     res = main(start_location, stop_location, route_type, elevation_gain_type, max_dist, algorithm)
 
     # Return the result to the client
-    if type(res) == str:
-        response = jsonify({'error': res}), 400
-    elif res == None:
+    if res == None:
         response = jsonify({'error': "error"}), 400
+    elif res == []:
+        response = jsonify({'error': "no_path_found"}), 400
     else:
         response = json.dumps(res), 200
     return response
