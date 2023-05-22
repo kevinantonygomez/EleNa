@@ -67,7 +67,7 @@ def algorithm(start_location:str, stop_location:str, route_type:str, elevation_g
     shortest_path_by_distance = get_shortest_length_path(G, start, destination)
     shortestDistance = calculate_path_length(G, shortest_path_by_distance)
 
-    upper_limit_distance_percentage = (100 + int(max_dist))
+    upper_limit_distance_percentage = (100 + float(max_dist))
     lower_limit_distance_percentage = 100
 
     #Boolean value to exit while loop once the shortest path within the maximum distance is found
@@ -109,4 +109,4 @@ def algorithm(start_location:str, stop_location:str, route_type:str, elevation_g
             formatted_path.append([G.nodes[node]['x'], G.nodes[node]['y']] )
         return formatted_path
     else:
-        return "no_path_found"
+        return []
