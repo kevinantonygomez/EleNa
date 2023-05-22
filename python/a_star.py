@@ -2,6 +2,7 @@
 import osmnx as ox
 import networkx as nx
 from queue import PriorityQueue
+from typing import Callable
 
 # Default region(only consider routes in this region/place)
 DEFAULT_REGION = "Amherst, MA"
@@ -14,29 +15,40 @@ ELEVATION_ATTR = "elevation"
 # Term to find in both stop and start locations. If input does not include these, return error.
 SEARCH_TERM = "amherst"
 
-def calculate_elevation_gain(graph, nodes:list) -> int:
+def calculate_elevation_gain(graph:nx.MultiDiGraph, nodes:list) -> int:
     ind = 0
     gain = 0
+    # Iterate through pairs of adjacent nodes and calculate absolute elevation gain
     while ind < len(nodes) - 2:
         gain += abs(graph.nodes[nodes[ind]][ELEVATION_ATTR] - graph.nodes[nodes[ind+1]][ELEVATION_ATTR])
         ind += 1
     return gain
 
-def geo_code(graph, nodes:list) -> list:
+def geo_code(graph:nx.MultiDiGraph, nodes:list) -> list:
     geo_coded_nodes = list()
 
+    # Convering node IDs to latitude and longitudes i.e geocoding them.
     for node in nodes:
         geo_coded_nodes.append([graph.nodes[node]['x'], graph.nodes[node]['y']])
 
     return geo_coded_nodes
 
-
-def algorithm(start_location:str, stop_location:str, route_type:str, elevation_gain_type:str, max_dist:str, API_KEY:str) -> list:
-    # call required methods here.
-
+def get_heuristic(elevation_gain_type:str, graph:nx.MultiDiGraph, attr:str) -> Callable:
     # A star always looks for lowest cost. If it is a min elevation gain, then each elevation added to length is costly and therefore remains positive.
     # If it is max elevation gain, for the heuristic we subtract it so that the higher elevations become lower cost so A star will look for it.
     multiplier = 1 if elevation_gain_type == "min" else -1
+    return lambda x, y: (multiplier * (abs(graph.nodes[x][attr] - graph.nodes[y][attr])))
+
+
+
+def algorithm(start_location:str, stop_location:str, route_type:str, elevation_gain_type:str, max_dist:str, API_KEY:str, to_geocode:bool) -> list:
+    # Input checks
+    vars = [start_location, stop_location, route_type, elevation_gain_type, max_dist, API_KEY]
+    for var in vars:
+        if var is None or type(var) != str:
+            return None
+
+
 
     if "amherst" not in start_location.lower():
         return []
@@ -62,21 +74,21 @@ def algorithm(start_location:str, stop_location:str, route_type:str, elevation_g
     default_region_graph = ox.graph_from_place(query=DEFAULT_REGION, network_type=route_type)
 
     # Finding the nearest nodes to the start and stop exact geocodes
-    start_node = ox.nearest_nodes(default_region_graph, geocode_start_lon, geocode_start_lat)
-    stop_node = ox.nearest_nodes(default_region_graph, geocode_stop_lon, geocode_stop_lat)
+    start_node = ox.nearest_nodes(G=default_region_graph, X=geocode_start_lon, Y=geocode_start_lat)
+    stop_node = ox.nearest_nodes(G=default_region_graph, X=geocode_stop_lon, Y=geocode_stop_lat)
 
     # Generating the shortest path, calculating its distance and then adding on the user's settings
-    shortest_path = ox.shortest_path(default_region_graph, start_node, stop_node, weight=LENGTH_ATTR, cpus=None)
-    shortest_distance = nx.classes.function.path_weight(default_region_graph, shortest_path, weight=LENGTH_ATTR)
+    shortest_path = ox.shortest_path(G=default_region_graph, orig=start_node, dest=stop_node, weight=LENGTH_ATTR, cpus=None)
+    shortest_distance = nx.classes.function.path_weight(G=default_region_graph, path=shortest_path, weight=LENGTH_ATTR)
     shortest_distance_with_percentage_max_dist = shortest_distance * (1 + (float(max_dist)/100))
 
     # Generating the final graph, adding elevations via gmaps.
     graph = ox.graph.graph_from_address(address=start_location, dist=shortest_distance_with_percentage_max_dist, network_type=route_type, dist_type=DIST_TYPE)
-    graph = ox.elevation.add_node_elevations_google(graph, API_KEY)
+    graph = ox.elevation.add_node_elevations_google(G=graph, api_key=API_KEY)
 
     # Finding the nearest nodes to the start and stop exact geocodes in the final graph
-    start_node = ox.nearest_nodes(graph, geocode_start_lon, geocode_start_lat)
-    stop_node = ox.nearest_nodes(graph, geocode_stop_lon, geocode_stop_lat)
+    start_node = ox.nearest_nodes(G=graph, X=geocode_start_lon, Y=geocode_start_lat)
+    stop_node = ox.nearest_nodes(G=graph, X=geocode_stop_lon, Y=geocode_stop_lat)
 
 
     # A star algorithm, maintaining priority queue for cost to nodes
@@ -89,10 +101,14 @@ def algorithm(start_location:str, stop_location:str, route_type:str, elevation_g
 
     path_found = False
 
+    # Getting heuristic function
+    heuristic = get_heuristic(elevation_gain_type=elevation_gain_type, graph=graph, attr=ELEVATION_ATTR)
+
 
     while not pq.empty():
         current = pq.get()
 
+        # Stored as tuple so getting Node ID and not priority
         current = current[1]
 
         if current == stop_node:
@@ -109,16 +125,16 @@ def algorithm(start_location:str, stop_location:str, route_type:str, elevation_g
                 if to_node not in cost_so_far or new_cost < cost_so_far[to_node]:
                     cost_so_far[to_node] = new_cost
                     # Cost with heuristic here as priority, and elevation difference as heuristic.
-                    priority = new_cost + (multiplier * (abs(graph.nodes[current][ELEVATION_ATTR] - graph.nodes[to_node][ELEVATION_ATTR])))
+                    priority = new_cost + heuristic(current, to_node)
                     pq.put((priority, to_node))
                     came_from[to_node] = (current, edge_weight)
 
-    # Getting the path back and checking weight
-    my_path = []
+    # Getting the path back and calculating weight
+    astar_path = []
     current = stop_node
     weight = 0
     while current != None:
-        my_path.append(current)
+        astar_path.append(current)
         if came_from[current] is not None:
             prev, length = came_from[current]
             weight += length
@@ -126,8 +142,13 @@ def algorithm(start_location:str, stop_location:str, route_type:str, elevation_g
         else:
             current = came_from[current]
 
-    my_path.reverse()
+    astar_path.reverse()
 
+    # If we did not find a path or if the path we found is too large, we return empty list
     if not path_found or weight > shortest_distance_with_percentage_max_dist:
         return []
-    return geo_code(graph, my_path)
+    
+    if to_geocode:
+        return geo_code(graph=graph, nodes=astar_path)
+    else:
+        return astar_path
