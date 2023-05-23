@@ -39,7 +39,7 @@ def main(start_location:str, stop_location:str, route_type:str, elevation_gain_t
     stop_location = check_res[1]
 
     if algorithm == "dijkstra":
-        gen_route = dijkstra.algorithm(start_location, stop_location, route_type, elevation_gain_type, max_dist, KEY)
+        gen_route = dijkstra.algorithm(start_location, stop_location, route_type, elevation_gain_type, max_dist, KEY, to_geocode=True)
     elif algorithm == "A*":
         gen_route = a_star.algorithm(start_location=start_location, stop_location=stop_location, route_type=route_type, elevation_gain_type=elevation_gain_type, max_dist=max_dist, API_KEY=KEY, to_geocode=True)
 
@@ -72,6 +72,6 @@ def handle_request():
 
 
 if __name__ == '__main__':
-    f = open("key.txt")
+    f = open("python/key.txt")
     KEY = f.read()
     app.run(port = 2000, debug=True)

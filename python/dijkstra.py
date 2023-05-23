@@ -4,6 +4,13 @@ import osmnx as ox
 # Default region(only consider routes in this region/place)
 DEFAULT_REGION = "Amherst, MA"
 
+# Term to find in both stop and start locations. If input does not include these, return error.
+SEARCH_TERM = "amherst"
+# All possible route types for the application
+POSSIBLE_ROUTE_TYPES = ["drive", "walk", "bike"]
+# All possibl elevation gain types
+POSSIBLE_ELEVATION_GAIN_TYPES = ["minimize", "maximize"]
+
 def get_shortest_length_path(G, start, end):
 	queue = []
 	heapq.heappush(queue, (0, start))
@@ -39,13 +46,35 @@ def calculate_path_length(G, path):
 		total_length += G.edges[path[i], path[i+1], 0]['length']
 	return total_length
 
-def algorithm(start_location:str, stop_location:str, route_type:str, elevation_gain_type:str, max_dist:str, API_KEY:str):
+def algorithm(start_location:str, stop_location:str, route_type:str, elevation_gain_type:str, max_dist:str, API_KEY:str, to_geocode:bool):
     # call required methods here.
 
     # return list of geocodes for each node of the route that need to be graphed eg: [[y1,x1], [y2,x2], ....]
     # return "no_path_found" if a route cannot be generated using the given constraints
+    vars = [start_location, stop_location, route_type, elevation_gain_type, max_dist, API_KEY]
+    for var in vars:
+        if var is None or type(var) != str:
+            return None
     
-    multiplier = 1 if elevation_gain_type == "min" else -1
+    if type(to_geocode) != bool:
+        return None
+    
+    if route_type.lower() not in POSSIBLE_ROUTE_TYPES:
+        return None
+    
+    if elevation_gain_type.lower() not in POSSIBLE_ELEVATION_GAIN_TYPES:
+        return None
+    
+    if float(max_dist) < 0 or float(max_dist) > 100:
+        return None
+    
+    if "amherst" not in start_location.lower():
+        return []
+    
+    if "amherst" not in stop_location.lower():
+        return []
+
+    multiplier = 1 if elevation_gain_type == "minimize" else -1
 
     # Geocoding the start and stop locations to get their latitude and longitudes.
     geocode_start = ox.geocode(start_location)
@@ -103,10 +132,13 @@ def algorithm(start_location:str, stop_location:str, route_type:str, elevation_g
                     heapq.heappush(queue, (((multiplier)*elevation_gain_per_node[nextNode]), nextNode))
                     prevNodes[nextNode] = curNode
         lower_limit_distance_percentage += 0.5
-    if path_found:
-        formatted_path = []
-        for node in path:
-            formatted_path.append([G.nodes[node]['x'], G.nodes[node]['y']] )
-        return formatted_path
+    if to_geocode:
+        if path_found:
+            formatted_path = []
+            for node in path:
+                formatted_path.append([G.nodes[node]['x'], G.nodes[node]['y']] )
+            return formatted_path
+        else:
+            return []
     else:
-        return []
+         return path
