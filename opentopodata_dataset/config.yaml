@@ -1,3 +1,0 @@
-datasets:
-- name: aster30m
-  path: data/aster30m/
