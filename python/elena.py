@@ -58,7 +58,7 @@ def handle_request():
     elevation_gain_type = data["elevationGainType"]
     max_dist = data["maxDist"]
     algorithm = data["algorithm"]
-    
+
     res = main(start_location, stop_location, route_type, elevation_gain_type, max_dist, algorithm)
 
     # Return the result to the client
@@ -72,6 +72,6 @@ def handle_request():
 
 
 if __name__ == '__main__':
-    f = open("python/key.txt")
+    f = open("key.txt")
     KEY = f.read()
     app.run(port = 2000, debug=True)

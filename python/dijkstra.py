@@ -47,30 +47,27 @@ def calculate_path_length(G, path):
 	return total_length
 
 def algorithm(start_location:str, stop_location:str, route_type:str, elevation_gain_type:str, max_dist:str, API_KEY:str, to_geocode:bool):
-    # call required methods here.
-
-    # return list of geocodes for each node of the route that need to be graphed eg: [[y1,x1], [y2,x2], ....]
-    # return "no_path_found" if a route cannot be generated using the given constraints
+   # Input checks
     vars = [start_location, stop_location, route_type, elevation_gain_type, max_dist, API_KEY]
     for var in vars:
-        if var is None or type(var) != str:
+        if var is None or (type(var) != str and type(var) != int):
             return None
-    
+
     if type(to_geocode) != bool:
         return None
-    
+
     if route_type.lower() not in POSSIBLE_ROUTE_TYPES:
         return None
-    
+
     if elevation_gain_type.lower() not in POSSIBLE_ELEVATION_GAIN_TYPES:
         return None
-    
+
     if float(max_dist) < 0 or float(max_dist) > 100:
         return None
-    
+
     if "amherst" not in start_location.lower():
         return []
-    
+
     if "amherst" not in stop_location.lower():
         return []
 
