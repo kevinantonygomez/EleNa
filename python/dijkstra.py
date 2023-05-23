@@ -46,7 +46,7 @@ def calculate_path_length(G, path):
 		total_length += G.edges[path[i], path[i+1], 0]['length']
 	return total_length
 
-def algorithm(start_location:str, stop_location:str, route_type:str, elevation_gain_type:str, max_dist:str, API_KEY:str, to_geocode:bool):
+def algorithm(start_location:str, stop_location:str, route_type:str, elevation_gain_type:str, max_dist:int, API_KEY:str, to_geocode:bool):
    # Input checks
     vars = [start_location, stop_location, route_type, elevation_gain_type, max_dist, API_KEY]
     for var in vars:
