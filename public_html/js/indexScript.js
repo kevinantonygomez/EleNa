@@ -280,7 +280,7 @@ function getRoute(){
       },
       error: function(xhr, status, error) {
         console.error('Error:', error);
-        alert("No route could be generated for these constraints")
+        alert("No route could be generated for these constraints.")
       }
     });
   });

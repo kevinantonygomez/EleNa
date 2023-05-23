@@ -60,12 +60,13 @@ def handle_request():
     algorithm = data["algorithm"]
 
     res = main(start_location, stop_location, route_type, elevation_gain_type, max_dist, algorithm)
-
     # Return the result to the client
     if res == None:
         response = jsonify({'error': "error"}), 400
     elif res == []:
         response = jsonify({'error': "no_path_found"}), 400
+    elif res == "invalid_start" or res == "invalid_stop":
+        response = jsonify({'error': res}), 400
     else:
         response = json.dumps(res), 200
     return response
